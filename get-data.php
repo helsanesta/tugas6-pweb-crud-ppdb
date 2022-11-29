@@ -19,6 +19,7 @@ if($_SERVER['REQUEST_METHOD'] == 'GET'){
             "agama" => $siswa["agama"],
             "sekolah_asal" => $siswa["sekolah_asal"],
             "alamat" => $siswa["alamat"],
+            "foto" => $siswa["foto"]
         ]);
         echo "\n";
         break;

@@ -30,8 +30,9 @@
 
             <table class="table table-striped">
             <thead>
-                <tr>
+                <tr>                
                 <th scope="col">No</th>
+                <th scope="col" >Foto</th>
                 <th scope="col">Nama</th>
                 <th scope="col">Alamat</th>
                 <th scope="col">Jenis Kelamin</th>
@@ -60,6 +61,11 @@
             <div class="form-floating mb-3">
               <input type="text" class="form-control" name="nama" id="nama" placeholder="Nama Lengkap" required>
               <label for="nama">Nama Lengkap</label>
+            </div>
+            <div class="mb-3">
+              <label for="foto">Foto</label>
+              <input type="file" class="form-control" name="foto" id="foto" accept=".png, .jpg, .jpeg" required>
+              <img src="" style="width: 96px; height:128px; object-fit: cover;" id="previewImg">
             </div>
             <div class="form-floating mb-3">
               <textarea class="form-control" placeholder="Alamat" name="alamat" id="alamat" style="height: 100px" required></textarea>
@@ -115,11 +121,11 @@
           if (element) {
             let data = JSON.parse(element);
             if (!data) return;
-
             $('#listSiswa').append(`
               <tr>
                 <td>${data.id}</td>
-                <td>${data.nama}</td>
+                <td><img src="images/${data.foto}" alt="Foto ${data.nama}" style="width: 96px; height:128px; object-fit: cover;"></td>
+                <td>${data.nama}</td>s
                 <td>${data.alamat}</td>
                 <td>${data.jenis_kelamin}</td>
                 <td>${data.agama}</td>
@@ -137,6 +143,7 @@
   });
 
   const getDataSiswa = (id => {
+    $('#form-edit')[0].reset();
     $.ajax({
       type: 'GET',
       url: "get-data.php?id=" + id,
@@ -144,6 +151,8 @@
         let data = JSON.parse(resultData);
         $('#edit-btn').data('id', id);
         $('#nama').val(data.nama);
+        $('#previewImg').attr('src', `images/${data.foto}`);
+        $('#previewImg').addClass('mt-3');
         $('#jenis_kelamin option[value=' + data.jenis_kelamin + ']').attr('selected', 'selected');
         $('#agama option[value=' + data.agama + ']').attr('selected', 'selected');
         $('#sekolah_asal').val(data.sekolah_asal);
@@ -152,7 +161,22 @@
     });
   });
 
+  $('#foto').change(function(e) {
+    if (e.target.files && e.target.files[0]) {
+      let reader = new FileReader();
+
+      reader.onload = function(e) {
+        $('#previewImg').addClass('mt-3');
+        $('#previewImg').attr('src', e.target.result);
+      }
+
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  });
+
   $('#edit-btn').on('click', () => {
+    var form = $('#form-edit')[0];
+    var formData = new FormData(form);
     let dataSiswa = {
       id: $('#edit-btn').data('id'),
       nama: $('#nama').val(),
@@ -170,10 +194,22 @@
       !dataSiswa.alamat.length) flag = true
 
     if (!flag) {
+      formData.append('id', dataSiswa.id);
+      formData.append('nama', dataSiswa.nama);
+      formData.append('jenis_kelamin', dataSiswa.jenis_kelamin);
+      formData.append('agama', dataSiswa.agama);
+      formData.append('sekolah_asal', dataSiswa.sekolah_asal);
+      formData.append('alamat', dataSiswa.alamat);
+
+      var file = $('#foto')[0].files[0]
+      if (file) formData.append('foto', file);
       $.ajax({
         type: 'POST',
-        url: "update.php",
-        data: dataSiswa,
+        enctype: 'multipart/form-data',
+        url: "edit-data.php",
+        data: formData,
+        processData: false,
+        contentType: false,
         success: function(resultData) {
           Swal.fire({
             icon: 'success',

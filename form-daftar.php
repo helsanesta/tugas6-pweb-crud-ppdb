@@ -23,12 +23,17 @@
     </h4>
 
     <div class="bg-white card">
-      <form action="create.php" method="POST">
+      <form action="create.php" method="POST" enctype="multipart/form-data">
         <fieldset>
           <div class="form-floating mb-3">
             <input type="text" class="form-control" name="nama" id="nama" placeholder="Nama lengkap Anda" required>
             <label for="nama">Nama Lengkap</label>
           </div>
+          <div class="mb-3">
+              <label for="foto" class="form-label">Foto</label>
+              <input type="file" class="form-control" name="foto" id="foto" accept=".png, .jpg, .jpeg" required>
+              <img src="" style="max-height: 100px; width: auto" id="previewImg">
+            </div>
           <div class="form-floating mb-3">
             <textarea class="form-control" placeholder="Alamat" name="alamat" id="alamat" style="height: 100px" required></textarea>
             <label for="alamat">Alamat</label>
