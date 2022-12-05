@@ -24,6 +24,7 @@
                 <h4>Daftar Calon Siswa Baru</h4>
             </div>
             <div class="col-sm-6 float-end">
+                <a href="unduh-pdf.php" class="btn btn-danger mb-2 float-end">+ Unduh PDF</a>
                 <a href="form-daftar.php" class="btn btn-primary mb-2 float-end">+ Daftar</a>
             </div>
             </div>
